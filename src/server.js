@@ -1,15 +1,58 @@
 import { createServer } from "node:http";
+import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 import { checkDomain } from "./check.js";
 import { handleRequest } from "./worker.js";
 
-function checkWithNode({ domain, endpoint, timeoutMs }) {
+const MAX_REDIRECTS = 5;
+
+function checkWithNode({ domain, endpoint, timeoutMs, method, protocol }) {
+  return requestOnce({ domain, hostname: endpoint, path: "/", timeoutMs, method, protocol, redirectsLeft: MAX_REDIRECTS });
+}
+
+function requestOnce({ domain, hostname, path, timeoutMs, method, protocol, redirectsLeft }) {
   return new Promise((resolve) => {
-    const req = httpsRequest({ method: "HEAD", hostname: endpoint, servername: endpoint, path: "/", headers: { Host: domain }, timeout: timeoutMs }, (res) => {
+    const clientRequest = protocol === "https" ? httpsRequest : httpRequest;
+    const options = {
+      method,
+      hostname,
+      path,
+      headers: { Host: domain },
+      timeout: timeoutMs,
+    };
+
+    if (protocol === "https") {
+      options.servername = hostname;
+      options.rejectUnauthorized = false;
+    }
+
+    const req = clientRequest(options, (res) => {
+      const location = res.headers.location;
+      const shouldFollow = location && [301, 302, 303, 307, 308].includes(res.statusCode) && redirectsLeft > 0;
       res.resume();
-      resolve({ status: res.statusCode, error: null });
+
+      if (!shouldFollow) {
+        resolve({ status: res.statusCode, error: null });
+        return;
+      }
+
+      const nextUrl = new URL(location, `${protocol}://${hostname}${path}`);
+      requestOnce({
+        domain,
+        hostname: nextUrl.hostname,
+        path: `${nextUrl.pathname}${nextUrl.search}`,
+        timeoutMs,
+        method: res.statusCode === 303 ? "GET" : method,
+        protocol: nextUrl.protocol.replace(":", ""),
+        redirectsLeft: redirectsLeft - 1,
+      }).then(resolve);
     });
-    req.on("timeout", () => { req.destroy(); resolve({ status: "ERR", error: "Timed out" }); });
+
+    req.on("timeout", () => {
+      req.destroy();
+      resolve({ status: "ERR", error: "Timed out" });
+    });
+
     req.on("error", () => resolve({ status: "ERR", error: "Request failed" }));
     req.end();
   });
@@ -47,5 +90,3 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, () => console.log(`Blocked in China Check is available at http://localhost:${port}`));
-
-

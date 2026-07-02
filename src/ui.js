@@ -12,7 +12,7 @@ export function html() {
 <body>
 <main>
 <h1>Blocked in China Check</h1>
-<p class="lead">Enter a domain and get a quick signal from a Tencent Cloud endpoint in Guangzhou.</p>
+<p class="lead">Enter a domain and get a quick signal from a Tencent Cloud endpoint in Shenzhen.</p>
 <div class="shell">
 <section class="panel" aria-label="Domain check">
 <form id="check-form"><label for="domain">Domain</label><div class="row"><input id="domain" name="domain" placeholder="example.com" autocomplete="url" inputmode="url" required /><button id="submit" type="submit">Show result</button></div></form>
@@ -30,3 +30,4 @@ form.addEventListener("submit",event=>{event.preventDefault();runCheck(domainInp
 </body>
 </html>`;
 }
+

@@ -2,7 +2,7 @@
 
 A small API and web UI that checks whether a domain is likely blocked in China.
 
-The check sends an HTTP `HEAD` request to a Tencent Cloud COS endpoint in Guangzhou and sets the tested domain as the `Host` header. The returned signal is interpreted using the rule set below.
+The check matches the reference probe: it sends an HTTP `GET` request to a Tencent Cloud COS endpoint and sets the tested domain as the `Host` header. The returned signal is interpreted using the rule set below.
 
 ## Result Rules
 
@@ -13,10 +13,11 @@ The check sends an HTTP `HEAD` request to a Tencent Cloud COS endpoint in Guangz
 | Request error or timeout | Likely blocked in China |
 | Any other response | Needs another look |
 
-Default endpoint:
+Default probe:
 
 ```text
-cos.ap-guangzhou.myqcloud.com
+GET http://cos.ap-shenzhen-fsi.myqcloud.com/
+Host: example.com
 ```
 
 ## Web UI
@@ -59,7 +60,9 @@ Example response:
 {
   "ok": true,
   "domain": "github.com",
-  "endpoint": "cos.ap-guangzhou.myqcloud.com",
+  "endpoint": "cos.ap-shenzhen-fsi.myqcloud.com",
+  "method": "GET",
+  "protocol": "http",
   "checkedAt": "2026-07-02T12:00:00.000Z",
   "status": 418,
   "error": null,
@@ -76,7 +79,7 @@ Invalid input returns `400` with a short message:
   "ok": false,
   "error": "Enter a full domain name.",
   "domain": "example",
-  "endpoint": "cos.ap-guangzhou.myqcloud.com",
+  "endpoint": "cos.ap-shenzhen-fsi.myqcloud.com",
   "checkedAt": "2026-07-02T12:00:00.000Z"
 }
 ```
@@ -85,8 +88,10 @@ Invalid input returns `400` with a short message:
 
 | Name | Default | Purpose |
 | --- | --- | --- |
-| `ENDPOINT` | `cos.ap-guangzhou.myqcloud.com` | Tencent Cloud endpoint used for checks |
-| `TIMEOUT_MS` | `8000` | Request timeout in milliseconds |
+| `ENDPOINT` | `cos.ap-shenzhen-fsi.myqcloud.com` | Tencent Cloud endpoint used for checks |
+| `PROBE_METHOD` | `GET` | Request method sent to the endpoint |
+| `PROBE_PROTOCOL` | `http` | Request protocol sent to the endpoint |
+| `TIMEOUT_MS` | `6000` | Request timeout in milliseconds |
 | `PORT` | `8787` | Local or Docker server port |
 
 ## Deploy to Cloudflare Workers
@@ -98,12 +103,14 @@ npm install
 npx wrangler deploy
 ```
 
-To change the endpoint or timeout, edit `wrangler.toml`:
+To change the endpoint, timeout, method, or protocol, edit `wrangler.toml`:
 
 ```toml
 [vars]
-ENDPOINT = "cos.ap-guangzhou.myqcloud.com"
-TIMEOUT_MS = "8000"
+ENDPOINT = "cos.ap-shenzhen-fsi.myqcloud.com"
+TIMEOUT_MS = "6000"
+PROBE_METHOD = "GET"
+PROBE_PROTOCOL = "http"
 ```
 
 You can verify the Worker bundle without publishing:
@@ -122,7 +129,7 @@ docker run --rm -p 8787:8787 is-blocked-in-china
 Use a different endpoint or timeout:
 
 ```powershell
-docker run --rm -p 8787:8787 -e ENDPOINT=cos.ap-guangzhou.myqcloud.com -e TIMEOUT_MS=8000 is-blocked-in-china
+docker run --rm -p 8787:8787 -e ENDPOINT=cos.ap-shenzhen-fsi.myqcloud.com -e TIMEOUT_MS=6000 is-blocked-in-china
 ```
 
 ## Project Layout

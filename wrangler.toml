@@ -3,5 +3,7 @@ main = "src/worker.js"
 compatibility_date = "2026-07-02"
 
 [vars]
-ENDPOINT = "cos.ap-guangzhou.myqcloud.com"
-TIMEOUT_MS = "8000"
+ENDPOINT = "cos.ap-shenzhen-fsi.myqcloud.com"
+TIMEOUT_MS = "6000"
+PROBE_METHOD = "GET"
+PROBE_PROTOCOL = "http"
