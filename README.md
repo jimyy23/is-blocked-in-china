@@ -1,24 +1,17 @@
-# is_blocked_in_china?
+# Blocked in China?
 
 A small API and web UI that checks whether a domain is likely blocked in China.
 
-The check matches the reference probe: it sends an HTTP `GET` request to a Tencent Cloud COS endpoint and sets the tested domain as the `Host` header. The returned signal is interpreted using the rule set below.
+The public API returns only the tested domain, check time, response signal, and the final result. The underlying check settings stay server-side.
 
 ## Result Rules
 
-| Endpoint response | Result |
+| Signal | API result |
 | --- | --- |
-| `400` or `404` | Not likely blocked in China |
-| `418` | Likely blocked in China |
-| Request error or timeout | Likely blocked in China |
-| Any other response | Needs another look |
-
-Default probe:
-
-```text
-GET http://cos.ap-shenzhen-fsi.myqcloud.com/
-Host: example.com
-```
+| `400` or `404` | `not_blocked` |
+| `418` | `blocked` |
+| Request error or timeout | `blocked` |
+| Any other signal | `blocked` |
 
 ## Web UI
 
@@ -35,7 +28,7 @@ Then visit:
 http://localhost:8787
 ```
 
-The page accepts a domain name and shows a plain-language result, the returned signal, and the check time.
+The page accepts a domain name, includes preset domains for quick testing, shows API usage, and displays the raw response from the same request used for the visible result.
 
 ## API v1
 
@@ -60,15 +53,12 @@ Example response:
 {
   "ok": true,
   "domain": "github.com",
-  "endpoint": "cos.ap-shenzhen-fsi.myqcloud.com",
-  "method": "GET",
-  "protocol": "http",
   "checkedAt": "2026-07-02T12:00:00.000Z",
   "status": 418,
   "error": null,
-  "result": "likely_blocked",
-  "label": "Likely blocked in China",
-  "summary": "The endpoint returned the blocked signal for this host."
+  "result": "blocked",
+  "label": "blocked",
+  "summary": "This domain is likely blocked in China."
 }
 ```
 
@@ -79,7 +69,6 @@ Invalid input returns `400` with a short message:
   "ok": false,
   "error": "Enter a full domain name.",
   "domain": "example",
-  "endpoint": "cos.ap-shenzhen-fsi.myqcloud.com",
   "checkedAt": "2026-07-02T12:00:00.000Z"
 }
 ```
@@ -88,9 +77,9 @@ Invalid input returns `400` with a short message:
 
 | Name | Default | Purpose |
 | --- | --- | --- |
-| `ENDPOINT` | `cos.ap-shenzhen-fsi.myqcloud.com` | Tencent Cloud endpoint used for checks |
-| `PROBE_METHOD` | `GET` | Request method sent to the endpoint |
-| `PROBE_PROTOCOL` | `http` | Request protocol sent to the endpoint |
+| `ENDPOINT` | `cos.ap-shenzhen-fsi.myqcloud.com` | Server-side check target |
+| `PROBE_METHOD` | `GET` | Server-side request method |
+| `PROBE_PROTOCOL` | `http` | Server-side request protocol |
 | `TIMEOUT_MS` | `6000` | Request timeout in milliseconds |
 | `PORT` | `8787` | Local or Docker server port |
 
@@ -103,7 +92,7 @@ npm install
 npx wrangler deploy
 ```
 
-To change the endpoint, timeout, method, or protocol, edit `wrangler.toml`:
+To change the server-side check settings, edit `wrangler.toml`:
 
 ```toml
 [vars]
@@ -126,7 +115,7 @@ docker build -t is-blocked-in-china .
 docker run --rm -p 8787:8787 is-blocked-in-china
 ```
 
-Use a different endpoint or timeout:
+Use different server-side check settings if needed:
 
 ```powershell
 docker run --rm -p 8787:8787 -e ENDPOINT=cos.ap-shenzhen-fsi.myqcloud.com -e TIMEOUT_MS=6000 is-blocked-in-china
@@ -156,4 +145,4 @@ Invoke-RestMethod -Uri 'http://localhost:8787/api/v1/check?domain=baidu.com' -Me
 
 ## Notes
 
-This is a signal check, not a legal or network guarantee. Different Tencent Cloud regions can return different signals, so keep the endpoint configurable for comparison or future changes.
+This is a signal check, not a legal or network guarantee. Different server-side targets can return different signals, so keep the check settings configurable for comparison or future changes.
