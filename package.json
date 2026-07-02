@@ -1,0 +1,19 @@
+{
+  "name": "is-blocked-in-china",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A small API and web UI for checking whether a domain is likely blocked in China.",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "build": "node --check src/check.js && node --check src/ui.js && node --check src/worker.js && node --check src/server.js",
+    "typecheck": "node --check src/check.js && node --check src/ui.js && node --check src/worker.js && node --check src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "wrangler": "^4.24.0"
+  }
+}

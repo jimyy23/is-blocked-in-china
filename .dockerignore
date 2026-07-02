@@ -1,0 +1,15 @@
+.git
+.gitignore
+.gitattributes
+.wrangler
+node_modules
+npm-debug.log*
+Dockerfile
+README.md
+.env
+.env.*
+coverage
+dist
+build
+.tmp
+tmp

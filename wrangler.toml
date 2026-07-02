@@ -1,0 +1,7 @@
+name = "is-blocked-in-china"
+main = "src/worker.js"
+compatibility_date = "2026-07-02"
+
+[vars]
+ENDPOINT = "cos.ap-guangzhou.myqcloud.com"
+TIMEOUT_MS = "8000"
