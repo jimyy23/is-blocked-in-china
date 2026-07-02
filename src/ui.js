@@ -1,3 +1,7 @@
+export function faviconSvg() {
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0f766e"/><path d="M18 32h28" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/><path d="M32 18v28" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/><circle cx="32" cy="32" r="22" fill="none" stroke="#dff3ea" stroke-width="4"/></svg>';
+}
+
 export function html() {
   const presetDomains = [
     "baidu.com",
@@ -36,7 +40,20 @@ export function html() {
     '<head>',
     '<meta charset="utf-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1" />',
-    '<title>Blocked in China?</title>',
+    '<title>Blocked in China? Domain Reachability Check</title>',
+    '<meta name="description" content="Check whether a domain is likely blocked in China with a simple web UI and API response." />',
+    '<meta name="robots" content="index,follow" />',
+    '<meta name="application-name" content="Blocked in China?" />',
+    '<meta name="theme-color" content="#0f766e" />',
+    '<meta property="og:type" content="website" />',
+    '<meta property="og:title" content="Blocked in China?" />',
+    '<meta property="og:description" content="Check whether a domain is likely blocked in China and inspect the raw API response." />',
+    '<meta property="og:site_name" content="Blocked in China?" />',
+    '<meta name="twitter:card" content="summary" />',
+    '<meta name="twitter:title" content="Blocked in China?" />',
+    '<meta name="twitter:description" content="Check whether a domain is likely blocked in China with a simple API-backed tool." />',
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml" />',
+    '<link rel="apple-touch-icon" href="/favicon.svg" />',
     '<style>',
     ':root{color-scheme:light;--bg:#f7f7f5;--panel:#fff;--ink:#191817;--muted:#6d6a64;--line:#dedbd3;--strong:#10100f;--accent:#0f766e;--accent-ink:#fff;--warning:#b45309;--danger:#b91c1c;--ok:#047857;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
     '*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink)}main{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:48px 0}.shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start}h1{margin:0 0 10px;font-size:clamp(2rem,6vw,4.75rem);line-height:.95;letter-spacing:0;max-width:760px}.lead{max-width:660px;color:var(--muted);font-size:1.05rem;line-height:1.65;margin:0 0 28px}.stack{display:grid;gap:16px}.panel,.result,.api{background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 18px 45px rgba(29,28,26,.06)}.panel,.api{padding:18px}label{display:block;color:var(--strong);font-size:.9rem;font-weight:650;margin-bottom:8px}.row{display:flex;gap:10px}input{width:100%;min-height:44px;border-radius:6px;border:1px solid var(--line);padding:0 12px;font:inherit;color:var(--ink);background:#fff;outline:none}input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,118,110,.15)}button{min-height:44px;border:0;border-radius:6px;padding:0 16px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;white-space:nowrap;cursor:pointer}button:disabled{cursor:wait;opacity:.72}.result{min-height:220px;padding:18px}.status{display:inline-flex;align-items:center;min-height:30px;border-radius:999px;padding:0 10px;font-size:.82rem;font-weight:750;background:#ece9e1;color:var(--muted)}.status.ok{background:#dff3ea;color:var(--ok)}.status.blocked{background:#fde8e8;color:var(--danger)}.status.unknown{background:#fff4d6;color:var(--warning)}.result h2,.api h2{margin:18px 0 8px;font-size:1.35rem;letter-spacing:0}.api h2{margin-top:0}.result p,.api p{color:var(--muted);line-height:1.6;margin:0}dl{display:grid;grid-template-columns:96px 1fr;gap:10px 12px;margin:18px 0 0;font-size:.92rem}dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}.samples{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.sample{min-height:32px;padding:0 10px;color:var(--ink);background:#f1eee7;border:1px solid var(--line);font-size:.88rem}.code{margin:12px 0 0;padding:12px;border-radius:6px;border:1px solid var(--line);background:#191817;color:#f7f7f5;overflow:auto;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere}@media (max-width:860px){main{padding:28px 0}.shell{grid-template-columns:1fr}.row{flex-direction:column}button{width:100%}.sample{width:auto}}',
@@ -74,4 +91,5 @@ export function html() {
     '</html>',
   ].join("\n");
 }
+
 

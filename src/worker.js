@@ -1,5 +1,5 @@
 import { checkDomain, JSON_HEADERS } from "./check.js";
-import { html } from "./ui.js";
+import { faviconSvg, html } from "./ui.js";
 
 async function readJson(request) {
   try { return await request.json(); } catch { return {}; }
@@ -16,6 +16,10 @@ export async function handleRequest(request, env = {}) {
     const result = await checkDomain(url.searchParams.get("domain") || body.domain, env);
     return Response.json(result, { status: result.ok ? 200 : 400, headers: JSON_HEADERS });
   }
+  if (url.pathname === "/favicon.svg") {
+    return new Response(faviconSvg(), { headers: { "content-type": "image/svg+xml; charset=utf-8", "cache-control": "public, max-age=86400" } });
+  }
+
   if (url.pathname === "/" || url.pathname === "/index.html") {
     return new Response(html(), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
   }
@@ -23,3 +27,4 @@ export async function handleRequest(request, env = {}) {
 }
 
 export default { fetch: (request, env) => handleRequest(request, env) };
+
