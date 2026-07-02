@@ -1,4 +1,4 @@
-# Blocked in China Check
+# is_blocked_in_china?
 
 A small API and web UI that checks whether a domain is likely blocked in China.
 

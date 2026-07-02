@@ -89,4 +89,4 @@ const server = createServer(async (req, res) => {
   });
 });
 
-server.listen(port, () => console.log(`Blocked in China Check is available at http://localhost:${port}`));
+server.listen(port, () => console.log(`is_blocked_in_china? is available at http://localhost:${port}`));

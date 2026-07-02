@@ -52,12 +52,12 @@ export function validateDomain(domain) {
 
 export function verdictFromStatus(status) {
   if (status === 400 || status === 404) {
-    return { result: "not_likely_blocked", label: "Not likely blocked in China", summary: "The endpoint returned a normal rejection for this host." };
+    return { result: "not_likely_blocked", label: "Not likely blocked in China", summary: "The check returned a normal rejection for this domain." };
   }
   if (status === 418 || status === "ERR") {
-    return { result: "likely_blocked", label: "Likely blocked in China", summary: "The endpoint returned the blocked signal for this host." };
+    return { result: "likely_blocked", label: "Likely blocked in China", summary: "The check returned a blocked signal for this domain." };
   }
-  return { result: "unknown", label: "Needs another look", summary: "The endpoint returned an unexpected result." };
+  return { result: "unknown", label: "Needs another look", summary: "The check returned an unexpected result." };
 }
 
 export async function checkWithFetch({ domain, endpoint, timeoutMs, method, protocol }) {
@@ -91,4 +91,5 @@ export async function checkDomain(domain, env = {}, runner = checkWithFetch) {
   const verdict = verdictFromStatus(probe.status);
   return { ok: true, domain: clean, endpoint, method, protocol, checkedAt, status: probe.status, error: probe.error, ...verdict };
 }
+
 
